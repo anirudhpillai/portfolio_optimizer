@@ -52,15 +52,24 @@ def compute_daily_returns(df):
     return daily_returns
 
 
+def compute_cumulative_returns(df):
+    """Compute and return the cumulative return values"""
+    cumulative_returns = (df / df.iloc[0]) - 1
+    return cumulative_returns
+
 def test_run():
     # Read data
     dates = pd.date_range('2012-01-01', '2012-12-31')
     symbols = ['SPY', 'AAPL', 'MSFT', 'GOOG']
     df = get_data(symbols, dates)
 
-    dr = compute_daily_returns(df)
-    dr[:100][['GOOG', 'AAPL']].plot()
+    df = compute_cumulative_returns(df)
+    df[:1000]['GOOG'].plot()
     plt.show()
+
+    # dr = compute_daily_returns(df)
+    # dr[:100][['GOOG', 'AAPL']].plot()
+    # plt.show()
 
     # # Compute Bollinger Bands
     # rm_SPY = get_rolling_mean(df['SPY'], window=20)
