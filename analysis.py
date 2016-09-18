@@ -65,12 +65,30 @@ def fill_missing_values(df_data):
     df_data.fillna(method="bfill", inplace=True)
 
 
+def compute_daily_portfolio_values(df, alloc, start_val):
+    normed = df / df.ix[0]
+    alloced = normed * alloc
+    pos_vals = alloced * start_val
+    port_val = pos_vals.sum(axis=1)
+    return port_val
+
+def compute_portfolio_stats(port_val):
+    daily_returns = ((port_val / port_val.shift(1)) - 1)[1:]
+    cumulative_returns = (port_val[-1] / port_val[0]) - 1
+    avg_daily_returns = daily_returns.mean()
+    std_daily_returns = daily_returns.std()
+    sharpe_ratio = (avg_daily_returns / std_daily_returns) * (252 ** 0.5)  # daily risk free rate taken as 0
+    return cumulative_returns, avg_daily_returns, std_daily_returns, sharpe_ratio
+
+
 def test_run():
     # Read data
     dates = pd.date_range('2012-01-01', '2012-12-31')
     symbols = ['SPY', 'AAPL', 'MSFT', 'GOOG']
     df = get_data(symbols, dates)
 
+    port_val = compute_daily_portfolio_values(df, [0, 0.2, 0, 0.8], 1000000)
+    print(compute_portfolio_stats(port_val))
     # df = compute_cumulative_returns(df)
     # df[:1000]['GOOG'].plot()
     # plt.show()
