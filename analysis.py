@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import pandas_datareader.data as web
 
@@ -57,41 +58,67 @@ def compute_cumulative_returns(df):
     cumulative_returns = (df / df.iloc[0]) - 1
     return cumulative_returns
 
+
+def fill_missing_values(df_data):
+    """Fill missing values in data frame, in place."""
+    df_data.fillna(method="ffill", inplace=True)
+    df_data.fillna(method="bfill", inplace=True)
+
+
 def test_run():
     # Read data
     dates = pd.date_range('2012-01-01', '2012-12-31')
     symbols = ['SPY', 'AAPL', 'MSFT', 'GOOG']
     df = get_data(symbols, dates)
 
-    df = compute_cumulative_returns(df)
-    df[:1000]['GOOG'].plot()
-    plt.show()
+    # df = compute_cumulative_returns(df)
+    # df[:1000]['GOOG'].plot()
+    # plt.show()
 
     # dr = compute_daily_returns(df)
     # dr[:100][['GOOG', 'AAPL']].plot()
     # plt.show()
 
-    # # Compute Bollinger Bands
-    # rm_SPY = get_rolling_mean(df['SPY'], window=20)
-    #
-    # # Compute rolling standard deviation
-    # rstd_SPY = get_rolling_std(df['SPY'], window=20)
-    #
-    # # Compute upper and lower bands
-    # upper_band, lower_band = get_bollinger_bands(rm_SPY, rstd_SPY)
-    #
-    # # Plot raw SPY values, rolling mean and Bollinger Bands
-    # ax = df['SPY'].plot(title="Bollinger Bands", label='SPY')
-    # rm_SPY.plot(label='Rolling mean', ax=ax)
-    # upper_band.plot(label='upper band', ax=ax)
-    # lower_band.plot(label='lower band', ax=ax)
-    #
-    # # Add axis labels and legend
-    # ax.set_xlabel("Date")
-    # ax.set_ylabel("Price")
-    # ax.legend(loc='upper left')
-    # plt.show()
+    # plotting histogram of daily returns
+    # dr.hist() gives histogram of all stocks in df
+    # dr['GOOG'].hist()
 
+    """ Scatter Plot
+    daily_returns = compute_daily_returns(df)
+
+    daily_returns.plot(kind='scatter', x='SPY', y='GOOG')
+    # Getting beta and alpha
+    beta_GOOG, alpha_GOOG = np.polyfit(daily_returns['SPY'], daily_returns['GOOG'], 1)
+    # plt.plot(x, m*x+c, line, color)
+    plt.plot(daily_returns['SPY'], beta_GOOG*daily_returns['SPY'] + alpha_GOOG, '-', color='r')
+
+    daily_returns.plot(kind='scatter', x='SPY', y='AAPL')
+    # Getting beta and alpha
+    beta_AAPL, alpha_AAPL = np.polyfit(daily_returns['SPY'], daily_returns['AAPL'], 1)
+    # plt.plot(x, m*x+c, line, color)
+    plt.plot(daily_returns['SPY'], beta_AAPL*daily_returns['SPY'] + alpha_AAPL, '-', color='r')
+
+    plt.show()
+
+    # Correlation
+    print(daily_returns.corr(method='pearson'))
+    """
+
+    """ Compute Bollinger Bands
+    rm_SPY = get_rolling_mean(df['SPY'], window=20)
+    rstd_SPY = get_rolling_std(df['SPY'], window=20)
+    upper_band, lower_band = get_bollinger_bands(rm_SPY, rstd_SPY)
+
+    ax = df['SPY'].plot(title="Bollinger Bands", label='SPY')
+    rm_SPY.plot(label='Rolling mean', ax=ax)
+    upper_band.plot(label='upper band', ax=ax)
+    lower_band.plot(label='lower band', ax=ax)
+
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Price")
+    ax.legend(loc='upper left')
+    plt.show()
+    """
 
 if __name__ == "__main__":
     test_run()
