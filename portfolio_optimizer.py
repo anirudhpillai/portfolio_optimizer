@@ -48,8 +48,9 @@ def portfolio_optimizer(symbols, start_date, end_date):
 
 
 def main():
-    symbols = ['AAPL', 'GOOG']
+    symbols = ['AAPL', 'GOOG', 'MSFT']
     print(portfolio_optimizer(symbols, '2011-01-01', '2015-12-31'))
+
 
 if __name__ == "__main__":
     main()

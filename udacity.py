@@ -88,6 +88,7 @@ def test_run():
 
     port_val = compute_daily_portfolio_values(df, [0, 0.2, 0, 0.8], 1000000)
     print(compute_portfolio_stats(port_val))
+    
     # df = compute_cumulative_returns(df)
     # df[:1000]['GOOG'].plot()
     # plt.show()
